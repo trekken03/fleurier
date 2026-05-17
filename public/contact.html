@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>contact</title>
+  <link rel="icon" href="images/icon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles/contact.css">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #d0b9b6;">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-white" href="index.html">
+        <img src="images/icon.png" alt="Fleurier Logo" width="40" height="40" class="d-inline-block align-text-center">
+        Fleurier
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link active text-white" href="contact.html">Contact</a></li>
+          <li class="nav-item" id="navLogin"><a class="btn btn-danger ms-2" href="login.html">Login</a></li>
+          <li class="nav-item" id="navRegister"><a class="btn btn-danger ms-2" href="registration.html">Register</a>
+          </li>
+          <li class="nav-item d-none" id="navGreeting">
+            <a class="nav-link text-white fw-bold" href="profile.html" id="navGreetingText"></a>
+          </li>
+          <li class="nav-item d-none" id="navCart">
+            <a class="nav-link text-white" href="cart.html"><i class="fa-solid fa-cart-shopping fa-xl"></i></a>
+          </li>
+          <li class="nav-item d-none" id="navLogout">
+            <a class="btn btn-danger ms-2" href="#" id="logoutBtn">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-5 flex-grow-1">
+    <div class="text-center mb-4">
+      <h1 class="fw-bold">Get in Touch</h1>
+      <p class="text-muted">We'd love to hear from you! Fill out the form or reach us via the details below. &lt;3</p>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <h4>Contact Details</h4>
+        <p><strong>Email:</strong> fleurierflowershop@gmail.com</p>
+        <p><strong>Phone:</strong> +63 912 345 6789</p>
+        <p><strong>Address:</strong> Bacolor, Pampanga</p>
+      </div>
+
+      <div class="col-md-8">
+        <div class="card shadow p-4">
+          <h4 class="mb-3">Send us a message</h4>
+
+          <!-- Shown when NOT logged in -->
+          <div id="notLoggedInMsg" class="d-none">
+            <div class="alert alert-warning d-flex align-items-center gap-2">
+              <i class="fas fa-lock"></i>
+              <span>You must be <a href="login.html" class="fw-bold text-danger">logged in</a> to send a message.</span>
+            </div>
+          </div>
+
+          <!-- Shown when logged in -->
+          <div id="contactFormFields">
+            <div class="mb-3">
+              <label for="name" class="form-label">Your Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Enter your name" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter your email" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Message</label>
+              <textarea class="form-control" id="message" rows="4" placeholder="Write your message"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" id="submitContactBtn">Submit</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="contactToast" class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true"
+      data-bs-autohide="true" data-bs-delay="3000">
+      <div class="toast-body">Message sent! We'll get back to you soon.</div>
+    </div>
+    <div id="loginToast" class="toast bg-danger text-white" role="alert" aria-live="assertive" aria-atomic="true"
+      data-bs-autohide="true" data-bs-delay="3000">
+      <div class="toast-body">Please log in first to send a message.</div>
+    </div>
+  </div>
+
+  <footer class="text-center text-dark py-3 my-auto" style="background-color: #f8d7da;">
+    <p class="mb-0">&copy; 2025 Fleurier. All rights reserved.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        const data = await res.json();
+
+        if (!data.success || !data.user) {
+          document.getElementById('notLoggedInMsg').classList.remove('d-none');
+          document.getElementById('contactFormFields').classList.add('d-none');
+        } else {
+          const u = data.user;
+          if (u.fullname) document.getElementById('name').value = u.fullname;
+          if (u.email) document.getElementById('email').value = u.email;
+        }
+      } catch (err) {
+        document.getElementById('notLoggedInMsg').classList.remove('d-none');
+        document.getElementById('contactFormFields').classList.add('d-none');
+      }
+
+      document.getElementById('submitContactBtn')?.addEventListener('click', async function () {
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        if (!name || !email || !message) {
+          alert('Please fill in all fields before submitting.');
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ name, email, message })
+          });
+          const data = await res.json();
+
+          if (data.success) {
+            document.getElementById('message').value = '';
+            bootstrap.Toast.getOrCreateInstance(document.getElementById('contactToast')).show();
+          } else {
+            alert(data.message || 'Failed to send message.');
+          }
+        } catch (err) {
+          console.error('Send message error:', err);
+          alert('Could not connect to server. Please try again.');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

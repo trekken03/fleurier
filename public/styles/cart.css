@@ -1,0 +1,69 @@
+body {
+  background-color: #f3e6e3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.fleur-navbar {
+  background-color: #d0b9b6 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.fleur-navbar .navbar-brand,
+.fleur-navbar .nav-link {
+  color: #ffffff !important;
+}
+
+.fleur-navbar .nav-link:hover {
+  opacity: 0.9;
+}
+
+.navbar .nav-item {
+  margin-left: 15px;
+}
+
+.navbar .nav-item:first-child {
+  margin-left: 0;
+}
+
+.fleur-footer {
+  background-color: #f8d7da !important;
+  margin-top: auto;
+}
+
+.fleur-footer p {
+  margin-bottom: 0;
+}
+
+.cart-item-main {
+  background-color: #fff;
+  transition: box-shadow 0.2s ease;
+}
+
+.cart-item-main:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.remove-btn {
+  color: #dc3545;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all 0.15s ease-in-out;
+}
+
+.remove-btn:hover {
+  color: #bb2d3b;
+  transform: scale(1.1);
+}
+
+@media (max-width: 400px) {
+  .cart-item-main {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+}

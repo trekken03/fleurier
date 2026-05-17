@@ -1,0 +1,80 @@
+body {
+  background-color: #f3e6e3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.fleur-navbar {
+  background-color: #d0b9b6 !important;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.navbar .nav-item {
+  margin-left: 10px;
+}
+
+footer {
+  background-color: #f8d7da;
+  width: 100%;
+}
+
+.registration-card {
+  width: 400px;
+  border-radius: 15px;
+}
+
+.btn-custom {
+  background-color: #d62c1a;
+  color: white;
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-weight: bold;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+  background-color: #e09191;
+  color: white;
+}
+
+.text-custom-link {
+  color: #e09191;
+  text-decoration: none;
+}
+
+.text-custom-link:hover {
+  color: #d62c1a;
+  text-decoration: underline;
+}
+
+.password-requirements {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
+.password-requirements li {
+  list-style: none;
+  padding-left: 20px;
+  position: relative;
+}
+
+.password-requirements li:before {
+  content: "•";
+  position: absolute;
+  left: 5px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/admin_dashb.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg admin-navbar">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-white" href="#">
+                <img src="images/icon.png" alt="Logo" width="40" height="40" class="me-2">
+                Fleurier Admin
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a href="#" class="nav-link text-white fw-bold">
+                    <i class="fas fa-user-circle me-1"></i>Hi, Admin!
+                </a>
+                <a href="login.html" class="btn btn-outline-light btn-sm nav-link d-inline-block ms-2"
+                    id="adminLogoutBtn">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-3 col-lg-2 admin-sidebar p-0">
+                <div class="pt-3">
+                    <div class="sidebar-link active" onclick="showSection('dashboard')">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </div>
+                    <div class="sidebar-link" onclick="showSection('products')">
+                        <i class="fas fa-shopping-bag me-2"></i>Products
+                    </div>
+                    <div class="sidebar-link" onclick="showSection('orders')">
+                        <i class="fas fa-shopping-cart me-2"></i>Orders
+                    </div>
+                    <div class="sidebar-link" onclick="showSection('users')">
+                        <i class="fas fa-users me-2"></i>Users
+                    </div>
+                    <div class="sidebar-link" onclick="showSection('contact_messages')">
+                        <i class="fas fa-envelope me-2"></i>Contact Messages
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9 col-lg-10 admin-content-area p-4">
+
+                <div id="dashboard-section">
+                    <h1 class="mb-4">Admin Dashboard</h1>
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="card admin-card stat-card">
+                                <div class="card-body">
+                                    <i class="fas fa-shopping-cart fa-2x text-primary"></i>
+                                    <div class="stat-number" id="statTotalOrders">0</div>
+                                    <p>Total Orders</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card admin-card stat-card">
+                                <div class="card-body">
+                                    <i class="fas fa-users fa-2x text-success"></i>
+                                    <div class="stat-number" id="statTotalUsers">0</div>
+                                    <p>Registered Users</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card admin-card stat-card">
+                                <div class="card-body">
+                                    <i class="fas fa-box fa-2x text-warning"></i>
+                                    <div class="stat-number" id="statTotalProducts">0</div>
+                                    <p>Products</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card admin-card stat-card">
+                                <div class="card-body">
+                                    <i class="fas fa-peso-sign fa-2x text-info"></i>
+                                    <div class="stat-number" id="statRevenue">₱0.00</div>
+                                    <p>Total Revenue</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="card admin-card stat-card">
+                                <div class="card-body">
+                                    <i class="fas fa-clock fa-2x text-warning"></i>
+                                    <div class="stat-number" id="statPendingOrders">0</div>
+                                    <p>Pending Orders</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card admin-card stat-card">
+                                <div class="card-body">
+                                    <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                                    <div class="stat-number" id="statLowStock">0</div>
+                                    <p>Low Stock Products</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card admin-card">
+                                <div class="card-body">
+                                    <h5>Sales Overview (Last 6 Months)</h5>
+                                    <canvas id="salesChart" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card admin-card">
+                                <div class="card-body">
+                                    <h5>Product Categories</h5>
+                                    <canvas id="productsChart" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card admin-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Recent Orders</h5>
+                                <button class="btn btn-sm btn-outline-primary" onclick="showSection('orders')">View
+                                    All</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>Items</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentOrdersBody">
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted py-4">No orders yet.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="products-section" class="d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1>Products Management (<span id="productCount">0</span>)</h1>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                            <i class="fas fa-plus me-1"></i>Add Product
+                        </button>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group" style="max-width:400px;">
+                            <span class="input-group-text" style="background-color:#d0b9b6;border-color:#d0b9b6;">
+                                <i class="fas fa-search text-white"></i>
+                            </span>
+                            <input type="text" id="productSearchInput" class="form-control"
+                                placeholder="Search by name, category, stock..." style="border-color:#d0b9b6;">
+                        </div>
+                    </div>
+                    <div class="card admin-card">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Product</th>
+                                            <th>Category</th>
+                                            <th>Price</th>
+                                            <th>Stock</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productsBody">
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted py-4">No products yet.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="orders-section" class="d-none">
+                    <h1 class="mb-3">Orders Management (<span id="orderCount">0</span>)</h1>
+                    <div class="mb-3">
+                        <div class="input-group" style="max-width:400px;">
+                            <span class="input-group-text" style="background-color:#d0b9b6;border-color:#d0b9b6;">
+                                <i class="fas fa-search text-white"></i>
+                            </span>
+                            <input type="text" id="orderSearchInput" class="form-control"
+                                placeholder="Search by order ID, customer, status..." style="border-color:#d0b9b6;">
+                        </div>
+                    </div>
+                    <div class="card admin-card">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Email</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>Items</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ordersBody">
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted py-4">No orders yet.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="users-section" class="d-none">
+                    <h1 class="mb-3">Users Management (<span id="userCount">0</span>)</h1>
+                    <div class="mb-3">
+                        <div class="input-group" style="max-width:400px;">
+                            <span class="input-group-text" style="background-color:#d0b9b6;border-color:#d0b9b6;">
+                                <i class="fas fa-search text-white"></i>
+                            </span>
+                            <input type="text" id="userSearchInput" class="form-control"
+                                placeholder="Search by name, email, role..." style="border-color:#d0b9b6;">
+                        </div>
+                    </div>
+                    <div class="card admin-card">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>User ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Role</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersBody">
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4">No users yet.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="contact_messages-section" class="d-none">
+                    <h1 class="mb-3">Contact Messages (<span id="messageCount">0</span>)</h1>
+                    <div class="mb-3">
+                        <div class="input-group" style="max-width:400px;">
+                            <span class="input-group-text" style="background-color:#d0b9b6;border-color:#d0b9b6;">
+                                <i class="fas fa-search text-white"></i>
+                            </span>
+                            <input type="text" id="messageSearchInput" class="form-control"
+                                placeholder="Search by name, email, message..." style="border-color:#d0b9b6;">
+                        </div>
+                    </div>
+                    <div class="card admin-card">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Sent At</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Message</th>
+                                            <th>Reply Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="messagesBody">
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted py-4">No contact messages yet.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductLabel">Add Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row g-3" id="addProductForm">
+                    <div class="col-md-6">
+                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <input type="text" id="productName" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Category</label>
+                        <input type="text" id="productCategory" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Price (₱) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" id="productPrice" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Initial Stock</label>
+                        <input type="number" id="productStock" class="form-control" min="0" value="0">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Image URL <span class="text-danger">*</span></label>
+                        <input type="text" id="productImage" class="form-control" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Description</label>
+                        <textarea id="productDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Status</label>
+                        <select id="productStatus" class="form-select">
+                            <option value="active" selected>Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body row g-3">
+                    <input type="hidden" id="editProductId">
+                    <div class="col-md-6">
+                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <input type="text" id="editProductName" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Category</label>
+                        <input type="text" id="editProductCategory" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Price (₱) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" id="editProductPrice" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Stock</label>
+                        <input type="number" id="editProductStock" class="form-control" min="0">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Image URL <span class="text-danger">*</span></label>
+                        <input type="text" id="editProductImage" class="form-control" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Description</label>
+                        <textarea id="editProductDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Status</label>
+                        <select id="editProductStatus" class="form-select">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveEditProductBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editOrderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Order Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editOrderId">
+                    <label class="form-label">Order ID: <strong id="editOrderIdDisplay"></strong></label>
+                    <select id="editOrderStatus" class="form-select mt-2">
+                        <option value="Pending">Pending</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveOrderStatusBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+        <div id="adminToast" class="toast text-white" role="alert" aria-live="assertive" aria-atomic="true"
+            data-bs-autohide="true" data-bs-delay="3000">
+            <div class="toast-body" id="adminToastBody"></div>
+        </div>
+    </div>
+
+
+
+    <!-- Reply Modal -->
+    <div class="modal fade" id="replyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-reply me-2"></i>Reply to Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="replyMessageId">
+                    <p class="mb-1 small text-muted">From: <strong id="replyMessageSender"></strong></p>
+                    <div class="p-3 mb-3 rounded" style="background-color:#f3e6e3; border-left: 4px solid #d0b9b6;">
+                        <p class="mb-0 small" id="replyOriginalMessage"></p>
+                    </div>
+                    <label class="form-label fw-semibold">Your Reply</label>
+                    <textarea id="replyText" class="form-control" rows="4"
+                        placeholder="Type your reply here..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="sendReplyBtn">
+                        <i class="fas fa-paper-plane me-1"></i>Send Reply
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Role Modal -->
+    <div class="modal fade" id="changeRoleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-shield me-2"></i>Change User Role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="changeRoleUserId">
+                    <p class="mb-3">Changing role for: <strong id="changeRoleUserName"></strong></p>
+                    <label class="form-label fw-semibold">Select New Role</label>
+                    <select id="changeRoleSelect" class="form-select">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <div class="alert alert-warning mt-3 mb-0 small">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        Making a user an <strong>Admin</strong> gives them full access to the dashboard.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveRoleBtn">Save Role</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin_dashb.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+body {
+    background-color: #fbfaf9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    border: 1px solid #f0ebe9;
+    border-radius: 12px;
+}
+
+.card-title {
+    font-size: 1rem;
+    color: #333;
+    border-bottom: 1px solid #f0ebe9;
+    padding-bottom: 0.75rem;
+}
+
+.form-control {
+    border: 1px solid #d0b9b6;
+    border-radius: 8px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.95rem;
+    background-color: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: #d0b9b6;
+    box-shadow: 0 0 0 0.2rem rgba(208, 185, 182, 0.25);
+    outline: none;
+}
+
+.form-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #999;
+    margin-bottom: 0.3rem;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #bb2d3b;
+    transform: translateY(-1px);
+}
+
+.btn-outline-danger {
+    border: 2px solid #dc3545;
+    border-radius: 8px;
+    padding: 0.65rem;
+    font-weight: 600;
+    color: #dc3545;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+footer {
+    background-color: #f8d7da;
+    margin-top: auto;
+}

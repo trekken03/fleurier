@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About</title>
+  <link rel="icon" href="images/icon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles/about.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100" style="background-color: #fbfaf9;">
+
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #d0b9b6;">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-white" href="index.html">
+        <img src="images/icon.png" alt="Fleurier Logo" width="40" height="40" class="d-inline-block align-text-center">
+        Fleurier
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active text-white" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
+          <li class="nav-item" id="navLogin"><a class="btn btn-danger ms-2" href="login.html">Login</a></li>
+          <li class="nav-item" id="navRegister"><a class="btn btn-danger ms-2" href="registration.html">Register</a>
+          </li>
+          <li class="nav-item d-none" id="navGreeting">
+            <a class="nav-link text-white fw-bold" href="profile.html" id="navGreetingText"></a>
+          </li>
+          <li class="nav-item d-none" id="navCart">
+            <a class="nav-link text-white" href="cart.html"><i class="fa-solid fa-cart-shopping fa-xl"></i></a>
+          </li>
+          <li class="nav-item d-none" id="navLogout">
+            <a class="btn btn-danger ms-2" href="#" id="logoutBtn">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <main class="flex-grow-1">
+
+    <div class="container my-5">
+      <div class="text-center mb-4">
+        <h1 class="fw-bold">About Us</h1>
+      </div>
+      <div class="row align-items-center">
+        <div class="col-md-4 text-center mb-4 mb-md-0">
+          <img src="images/abtus.png" alt="Flowers" class="img-fluid rounded w-75">
+        </div>
+        <div class="col-md-8">
+          <h2>Who We Are</h2>
+          <p>Fleurier was founded by a group of passionate women who share one thing in common — a deep love for
+            flowers.
+          </p>
+          <p>What started as a simple hobby blossomed into a mission: to spread joy, beauty, and elegance through
+            stunning
+            floral arrangements. Every bouquet we create is crafted with care, creativity, and a personal touch, because
+            for us, flowers aren't just products — they're expressions of love.</p>
+          <p>Whether it's for a celebration, a surprise, or just to make someone smile, we're here to make every moment
+            bloom.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container my-5">
+      <h2 class="text-center mb-4">Questions</h2>
+      <div class="accordion" id="faqAccordion">
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseOne">
+              Why choose to buy from our flowershop?
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"
+            background="#f8d7da;">
+            <div class="accordion-body">We believe flowers have the power to tell stories, brighten days, and celebrate
+              life's most meaningful moments. Every bouquet we create is crafted with care, creativity, and a personal
+              touch, because for us, flowers aren't just products — they're expressions of love.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseTwo">
+              How can I contact you?
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">You can reach us via the Contact page or by email.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseFour">
+              Can I customize my bouquet?
+            </button>
+          </h2>
+          <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">Yes! You can choose your preferred flowers, colors, and arrangements to make
+              your
+              bouquet truly unique.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseSix">
+              How to order?
+            </button>
+          </h2>
+          <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">You can place your order directly through our website or contact us via our
+              social
+              media pages. We'll showcase available flower designs, arrangements, and packages you can choose from.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseSeven">
+              Where is your store location?
+            </button>
+          </h2>
+          <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">We are a local flower shop based in Bacolor, Pampanga. Exact location and
+              directions will be provided on our website and social media pages.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseEight">
+              Do you accept advance orders?
+            </button>
+          </h2>
+          <div id="collapseEight" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">Yes, we accept advance orders and reservations to make sure your flowers are
+              ready
+              on your preferred date.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseTwelve">
+              What is your refund or replacement policy?
+            </button>
+          </h2>
+          <div id="collapseTwelve" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">Customer satisfaction is important to us. If your flowers arrive damaged or not
+              as
+              expected, please contact us within 24 hours. We will offer a replacement or refund depending on the
+              situation.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseNine">
+              How will I know if my order is confirmed and ready for processing?
+            </button>
+          </h2>
+          <div id="collapseNine" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">Once you place an order, we will send you a confirmation message (via website,
+              text, or social media). This will include details of your order and the estimated delivery or pick-up
+              time.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseFive">
+              I received the wrong bouquet, can you send me the right one?
+            </button>
+          </h2>
+          <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">It is highly unlikely that this will happen but in an unfortunate case if this
+              happens to you, get in touch with our Customer Support immediately by calling +639 1234 5678 and our
+              friendly Customer Service Team will help solve it and make it right.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseThree">
+              How do I amend my order?
+            </button>
+          </h2>
+          <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">If you want to amend your order, i.e. change gift card message, delivery address
+              and etc, please contact us as early as possible either by email or through phone. Please note we can only
+              guarantee to accept amendments if they are received at least 3 hours before dispatch of your order.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center text-dark py-3 mt-auto" style="background-color: #f8d7da;">
+    <p class="mb-0">&copy; 2025 Fleurier. All rights reserved.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/navbar.js"></script>
+</body>
+
+</html>

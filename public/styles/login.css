@@ -1,0 +1,51 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f3e6e3;
+}
+
+.flex-grow-main {
+  flex: 1 0 auto;
+}
+
+.navbar-bg {
+  background-color: #d0b9b6 !important;
+}
+
+.footer-bg {
+  background-color: #f8d7da;
+  flex-shrink: 0;
+}
+
+.btn-custom {
+  background-color: #d62c1a;
+  color: white;
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-weight: bold;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+  background-color: #e09191;
+  color: white;
+}
+
+.text-custom-link {
+  color: #e09191;
+  text-decoration: none;
+}
+
+.text-custom-link:hover {
+  color: #d62c1a;
+  text-decoration: underline;
+}
+
+.card {
+  border-radius: 15px;
+  width: 350px;
+}

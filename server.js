@@ -9,17 +9,31 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const sessionStoreOptions = {
-    host: process.env.MYSQLHOST,
-    port: process.env.MYSQLPORT,
-    user: process.env.MYSQLUSER,
-    password: process.env.MYSQLPASSWORD,
-    database: process.env.MYSQLDATABASE,
-    createDatabaseTable: true
-};
+// -------------------------------------------------------
+// MySQL session store
+// -------------------------------------------------------
+let sessionStoreOptions;
+
+if (process.env.MYSQL_URL) {
+    // Railway - use connection URL
+    sessionStoreOptions = { url: process.env.MYSQL_URL, createDatabaseTable: true };
+} else {
+    // Local
+    sessionStoreOptions = {
+        host: process.env.MYSQLHOST || 'localhost',
+        port: process.env.MYSQLPORT || 3306,
+        user: process.env.MYSQLUSER || 'root',
+        password: process.env.MYSQLPASSWORD || '',
+        database: process.env.MYSQLDATABASE || 'fleurier_db',
+        createDatabaseTable: true
+    };
+}
 
 const sessionStore = new MySQLStore(sessionStoreOptions);
 
+// -------------------------------------------------------
+// Middleware
+// -------------------------------------------------------
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

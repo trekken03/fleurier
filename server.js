@@ -9,31 +9,18 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// -------------------------------------------------------
-// MySQL session store
-// -------------------------------------------------------
-let sessionStoreOptions;
-
-if (process.env.MYSQL_URL) {
-    // Railway - use connection URL
-    sessionStoreOptions = { url: process.env.MYSQL_URL, createDatabaseTable: true };
-} else {
-    // Local
-    sessionStoreOptions = {
-        host: process.env.MYSQLHOST || 'localhost',
-        port: process.env.MYSQLPORT || 3306,
-        user: process.env.MYSQLUSER || 'root',
-        password: process.env.MYSQLPASSWORD || '',
-        database: process.env.MYSQLDATABASE || 'fleurier_db',
-        createDatabaseTable: true
-    };
-}
+const sessionStoreOptions = {
+    host: process.env.MYSQLHOST,
+    port: parseInt(process.env.MYSQLPORT) || 3306,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    createDatabaseTable: true,
+    ssl: { rejectUnauthorized: false }
+};
 
 const sessionStore = new MySQLStore(sessionStoreOptions);
 
-// -------------------------------------------------------
-// Middleware
-// -------------------------------------------------------
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -71,4 +58,6 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`🌸 Fleurier server running at http://localhost:${PORT}`);
+    console.log('MYSQLHOST:', process.env.MYSQLHOST);
+    console.log('MYSQLDATABASE:', process.env.MYSQLDATABASE);
 });

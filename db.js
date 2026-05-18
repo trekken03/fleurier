@@ -1,24 +1,17 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
-let pool;
-
-if (process.env.MYSQL_URL) {
-    // Railway provides a full connection URL
-    pool = mysql.createPool(process.env.MYSQL_URL + '?waitForConnections=true&connectionLimit=10&queueLimit=0');
-} else {
-    // Local development
-    pool = mysql.createPool({
-        host: process.env.MYSQLHOST || 'localhost',
-        user: process.env.MYSQLUSER || 'root',
-        password: process.env.MYSQLPASSWORD || '',
-        database: process.env.MYSQLDATABASE || 'fleurier_db',
-        port: process.env.MYSQLPORT || 3306,
-        waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0
-    });
-}
+const pool = mysql.createPool({
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    port: parseInt(process.env.MYSQLPORT) || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    ssl: { rejectUnauthorized: false }
+});
 
 const promisePool = pool.promise();
 

@@ -56,8 +56,6 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`🌸 Fleurier server running at http://localhost:${PORT}`);
-    console.log('MYSQLHOST:', process.env.MYSQLHOST);
-    console.log('MYSQLDATABASE:', process.env.MYSQLDATABASE);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🌸 Fleurier server running on port ${PORT}`);
 });

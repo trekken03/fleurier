@@ -1,19 +1,23 @@
+/* NAVBAR */
 .admin-navbar {
     background: #d0b9b6 !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* SIDEBAR */
 .admin-sidebar {
     background: #a49897;
     min-height: 100vh;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* CONTENT */
 .admin-content-area {
     background-color: #f8f9fa;
     min-height: 100vh;
 }
 
+/* SIDEBAR LINKS */
 .sidebar-link {
     padding: 12px 20px;
     color: #fff;
@@ -37,12 +41,14 @@
     font-weight: 600;
 }
 
+/* CARDS */
 .admin-card {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: none;
 }
 
+/* STATISTICS CARDS */
 .stat-card {
     text-align: center;
     padding: 20px;
@@ -54,6 +60,7 @@
     margin: 10px 0;
 }
 
+/* PRODUCT IMAGE */
 .product-image {
     width: 60px;
     height: 60px;
@@ -61,7 +68,88 @@
     border-radius: 5px;
 }
 
+/* BRAND */
 .navbar-brand {
     font-weight: 700;
     letter-spacing: 0.5px;
+}
+
+/* MOBILE MENU BUTTON */
+.mobile-menu-btn {
+    background: #f8f9fa;
+}
+
+.mobile-menu-btn .btn {
+    background-color: #a49897;
+    border: none;
+}
+
+.mobile-menu-btn .btn:hover {
+    background-color: #8e8281;
+}
+
+/* OFFCANVAS */
+.offcanvas.admin-sidebar {
+    width: 260px;
+    border: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 767px) {
+
+    .admin-sidebar {
+        min-height: auto;
+    }
+
+    .admin-content-area {
+        padding: 20px 15px !important;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .table-responsive {
+        font-size: 14px;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .admin-navbar .container {
+        flex-wrap: nowrap;
+    }
+
+    .navbar-nav {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .sidebar-link {
+        padding: 14px 20px;
+        font-size: 15px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table th,
+    .table td {
+        white-space: nowrap;
+        font-size: 13px;
+    }
+
+    .btn {
+        font-size: 14px;
+    }
+
+    .modal-dialog {
+        margin: 10px;
+    }
 }

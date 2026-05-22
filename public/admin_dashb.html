@@ -34,27 +34,90 @@
     <div class="container-fluid">
         <div class="row">
 
-            <div class="col-md-3 col-lg-2 admin-sidebar p-0">
+            <!-- MOBILE SIDEBAR BUTTON -->
+            <div class="d-md-none p-2 mobile-menu-btn">
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileSidebar">
+
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- DESKTOP SIDEBAR -->
+            <div class="col-md-3 col-lg-2 admin-sidebar p-0 d-none d-md-block">
                 <div class="pt-3">
+
                     <div class="sidebar-link active" onclick="showSection('dashboard')">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </div>
+
                     <div class="sidebar-link" onclick="showSection('products')">
                         <i class="fas fa-shopping-bag me-2"></i>Products
                     </div>
+
                     <div class="sidebar-link" onclick="showSection('orders')">
                         <i class="fas fa-shopping-cart me-2"></i>Orders
                     </div>
+
                     <div class="sidebar-link" onclick="showSection('users')">
                         <i class="fas fa-users me-2"></i>Users
                     </div>
+
                     <div class="sidebar-link" onclick="showSection('contact_messages')">
                         <i class="fas fa-envelope me-2"></i>Contact Messages
                     </div>
+
                 </div>
             </div>
 
-            <div class="col-md-9 col-lg-10 admin-content-area p-4">
+            <!-- MOBILE SIDEBAR -->
+            <div class="offcanvas offcanvas-start admin-sidebar" tabindex="-1" id="mobileSidebar">
+
+                <div class="offcanvas-header border-bottom border-light">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-bars me-2"></i>Menu
+                    </h5>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas">
+                    </button>
+                </div>
+
+                <div class="offcanvas-body p-0">
+
+                    <div class="pt-3">
+
+                        <div class="sidebar-link active" onclick="showSection('dashboard')" data-bs-dismiss="offcanvas">
+
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </div>
+
+                        <div class="sidebar-link" onclick="showSection('products')" data-bs-dismiss="offcanvas">
+
+                            <i class="fas fa-shopping-bag me-2"></i>Products
+                        </div>
+
+                        <div class="sidebar-link" onclick="showSection('orders')" data-bs-dismiss="offcanvas">
+
+                            <i class="fas fa-shopping-cart me-2"></i>Orders
+                        </div>
+
+                        <div class="sidebar-link" onclick="showSection('users')" data-bs-dismiss="offcanvas">
+
+                            <i class="fas fa-users me-2"></i>Users
+                        </div>
+
+                        <div class="sidebar-link" onclick="showSection('contact_messages')" data-bs-dismiss="offcanvas">
+
+                            <i class="fas fa-envelope me-2"></i>Contact Messages
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-12 col-md-9 col-lg-10 admin-content-area p-4">
 
                 <div id="dashboard-section">
                     <h1 class="mb-4">Admin Dashboard</h1>

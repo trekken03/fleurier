@@ -14,19 +14,17 @@
 <body>
 
     <nav class="navbar navbar-expand-lg admin-navbar">
-        <div class="container-fluid px-3">
-            <button class="btn btn-outline-light btn-sm me-2 d-md-none" id="sidebarToggle">
-                <i class="fas fa-bars"></i>
-            </button>
+        <div class="container">
             <a class="navbar-brand fw-bold text-white" href="#">
-                <img src="images/icon.png" alt="Logo" width="35" height="35" class="me-2">
+                <img src="images/icon.png" alt="Logo" width="40" height="40" class="me-2">
                 Fleurier Admin
             </a>
-            <div class="navbar-nav ms-auto flex-row">
-                <a href="#" class="nav-link text-white fw-bold d-none d-sm-block">
+            <div class="navbar-nav ms-auto">
+                <a href="#" class="nav-link text-white fw-bold">
                     <i class="fas fa-user-circle me-1"></i>Hi, Admin!
                 </a>
-                <a href="login.html" class="btn btn-outline-light btn-sm ms-2" id="adminLogoutBtn">
+                <a href="login.html" class="btn btn-outline-light btn-sm nav-link d-inline-block ms-2"
+                    id="adminLogoutBtn">
                     <i class="fas fa-sign-out-alt me-1"></i>Logout
                 </a>
             </div>
@@ -36,17 +34,13 @@
     <div class="container-fluid">
         <div class="row">
 
-            <div class="col-md-3 col-lg-2 admin-sidebar p-0 d-none d-md-block" id="adminSidebar">
+            <div class="col-md-3 col-lg-2 admin-sidebar p-0">
                 <div class="pt-3">
                     <div class="sidebar-link active" onclick="showSection('dashboard')">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </div>
                     <div class="sidebar-link" onclick="showSection('products')">
                         <i class="fas fa-shopping-bag me-2"></i>Products
-                    </div>
-                    <div class="sidebar-link" onclick="showSection('trash'); loadTrash();">
-                        <i class="fas fa-trash me-2"></i>Trash <span class="badge bg-danger ms-1"
-                            id="trashCount">0</span>
                     </div>
                     <div class="sidebar-link" onclick="showSection('orders')">
                         <i class="fas fa-shopping-cart me-2"></i>Orders
@@ -60,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="col-md-9 col-lg-10 admin-content-area p-3 p-md-4" id="adminContent">
+            <div class="col-md-9 col-lg-10 admin-content-area p-4">
 
                 <div id="dashboard-section">
                     <h1 class="mb-4">Admin Dashboard</h1>
@@ -205,54 +199,6 @@
                                     <tbody id="productsBody">
                                         <tr>
                                             <td colspan="7" class="text-center text-muted py-4">No products yet.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div id="trash-section" class="d-none">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h1><i class="fas fa-trash me-2 text-danger"></i>Trash (<span id="trashCount2">0</span>)</h1>
-                    </div>
-                    <div class="alert alert-warning d-flex align-items-center gap-2 mb-3">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Products in trash are hidden from the shop. You can restore or permanently delete
-                            them.</span>
-                    </div>
-                    <div class="mb-3">
-                        <div class="input-group" style="max-width:400px;">
-                            <span class="input-group-text" style="background-color:#d0b9b6;border-color:#d0b9b6;">
-                                <i class="fas fa-search text-white"></i>
-                            </span>
-                            <input type="text" id="trashSearchInput" class="form-control"
-                                placeholder="Search deleted products..." style="border-color:#d0b9b6;">
-                        </div>
-                    </div>
-                    <div class="card admin-card">
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Product</th>
-                                            <th>Price</th>
-                                            <th>Stock</th>
-                                            <th>Deleted At</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="trashBody">
-                                        <tr>
-                                            <td colspan="6" class="text-center text-muted py-5">
-                                                <i class="fas fa-trash fa-2x mb-2 d-block"
-                                                    style="color:#d0b9b6;opacity:0.4;"></i>
-                                                Trash is empty.
-                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -566,41 +512,6 @@
             </div>
         </div>
     </div>
-
-
-    <!-- Mobile Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <script>
-        // Mobile sidebar toggle
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const adminSidebar = document.getElementById('adminSidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function () {
-                adminSidebar.classList.toggle('show');
-                sidebarOverlay.classList.toggle('show');
-            });
-        }
-
-        if (sidebarOverlay) {
-            sidebarOverlay.addEventListener('click', function () {
-                adminSidebar.classList.remove('show');
-                sidebarOverlay.classList.remove('show');
-            });
-        }
-
-        // Close sidebar when a section is clicked on mobile
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', function () {
-                if (window.innerWidth < 768) {
-                    adminSidebar.classList.remove('show');
-                    sidebarOverlay.classList.remove('show');
-                }
-            });
-        });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/admin_dashb.js"></script>

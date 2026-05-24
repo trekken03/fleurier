@@ -1,6 +1,4 @@
-// admin_dashb.js - all data via server API
 
-// Auth guard
 (async function () {
     try {
         const res = await fetch('/api/auth/me', { credentials: 'include' });
@@ -21,9 +19,7 @@ document.getElementById('adminLogoutBtn').addEventListener('click', async functi
     }
 });
 
-// -------------------------------------------------------
-// Section navigation
-// -------------------------------------------------------
+
 function showSection(name) {
     document.querySelectorAll('[id$="-section"]').forEach(s => s.classList.add('d-none'));
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -42,7 +38,7 @@ function showToast(message, type = 'success') {
     bootstrap.Toast.getOrCreateInstance(toastEl).show();
 }
 
-// FIX 1: Status badge with proper colors for every status
+
 function statusBadge(status) {
     const map = {
         Pending: 'bg-warning text-dark',
@@ -54,7 +50,7 @@ function statusBadge(status) {
     return map[status] || 'bg-secondary text-white';
 }
 
-// FIX 2: Normalize status casing from DB (pending -> Pending)
+
 function normalizeStatus(status) {
     if (!status) return 'Pending';
     const s = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
@@ -62,9 +58,7 @@ function normalizeStatus(status) {
     return valid.includes(s) ? s : status;
 }
 
-// -------------------------------------------------------
-// Dashboard Stats - FIX 3: revenue uses normalized status
-// -------------------------------------------------------
+
 async function loadDashboardStats() {
     try {
         const [ordersRes, usersRes, productsRes] = await Promise.all([
@@ -405,7 +399,7 @@ document.getElementById('orderSearchInput').addEventListener('input', function (
     renderOrdersTable(filtered);
 });
 
-// FIX: properly sets the dropdown to current status
+
 function openEditOrder(orderId, currentStatus) {
     const status = normalizeStatus(currentStatus);
     document.getElementById('editOrderId').value = orderId;
@@ -468,10 +462,14 @@ function renderUsersTable(users) {
             <td>${u.email || 'N/A'}</td>
             <td>${u.phone || 'N/A'}</td>
             <td><span class="badge ${u.role === 'admin' ? 'bg-danger' : 'bg-primary'}">${u.role || 'user'}</span></td>
-            <td>
-                <button class="btn btn-sm btn-outline-secondary" onclick="openChangeRole(${u.id}, '${u.fullname}', '${u.role}')">
+           <td>
+                <button class="btn btn-sm btn-outline-secondary me-1" onclick="openChangeRole(${u.id}, '${u.fullname}', '${u.role}')">
                     <i class="fas fa-user-shield me-1"></i>Change Role
                 </button>
+                ${u.role !== 'admin' ? `
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${u.id}, '${u.fullname}')">
+                    <i class="fas fa-trash"></i>
+                </button>` : ''}
             </td>
         </tr>`).join('');
 }
@@ -493,6 +491,25 @@ function openChangeRole(userId, fullname, currentRole) {
     document.getElementById('changeRoleUserName').textContent = fullname;
     document.getElementById('changeRoleSelect').value = currentRole;
     bootstrap.Modal.getOrCreateInstance(document.getElementById('changeRoleModal')).show();
+}
+async function deleteUser(userId, fullname) {
+    if (!confirm(`Delete user "${fullname}"? This will also delete their cart and orders.`)) return;
+    try {
+        const res = await fetch(`/api/users/${userId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success) {
+            loadUsers();
+            loadDashboardStats();
+            showToast('User deleted.', 'danger');
+        } else {
+            showToast(data.message || 'Failed to delete user.', 'danger');
+        }
+    } catch (err) {
+        showToast('Server error.', 'danger');
+    }
 }
 
 document.getElementById('saveRoleBtn').addEventListener('click', async function () {

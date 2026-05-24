@@ -17,7 +17,7 @@ function requireAdmin(req, res, next) {
     next();
 }
 
-// GET /api/users/me - get current user profile
+
 router.get('/me', requireLogin, async (req, res) => {
     try {
         const [rows] = await db.query(
@@ -32,7 +32,7 @@ router.get('/me', requireLogin, async (req, res) => {
     }
 });
 
-// PUT /api/users/me - update profile
+
 router.put('/me', requireLogin, async (req, res) => {
     const { fullname, email, phone, address } = req.body;
 
@@ -41,7 +41,7 @@ router.put('/me', requireLogin, async (req, res) => {
     }
 
     try {
-        // Check if email is taken by another user
+
         const [existing] = await db.query(
             'SELECT id FROM users WHERE email = ? AND id != ?',
             [email, req.session.user.id]
@@ -55,7 +55,7 @@ router.put('/me', requireLogin, async (req, res) => {
             [fullname, email, phone || '', address || '', req.session.user.id]
         );
 
-        // Update session
+
         req.session.user = { ...req.session.user, fullname, email, phone, address };
 
         return res.json({ success: true, message: 'Profile updated successfully!', user: req.session.user });
@@ -65,7 +65,7 @@ router.put('/me', requireLogin, async (req, res) => {
     }
 });
 
-// PUT /api/users/me/password - change password
+
 router.put('/me/password', requireLogin, async (req, res) => {
     const { current_password, new_password } = req.body;
 
@@ -95,7 +95,7 @@ router.put('/me/password', requireLogin, async (req, res) => {
     }
 });
 
-// GET /api/users - get all users (admin only)
+
 router.get('/', requireAdmin, async (req, res) => {
     try {
         const [rows] = await db.query(
@@ -109,7 +109,7 @@ router.get('/', requireAdmin, async (req, res) => {
 });
 
 
-// PUT /api/users/:id/role - change user role (admin only)
+
 router.put('/:id/role', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { role } = req.body;
@@ -126,6 +126,25 @@ router.put('/:id/role', requireAdmin, async (req, res) => {
         return res.json({ success: true, message: `User role updated to "${role}".` });
     } catch (err) {
         console.error('Change role error:', err);
+        return res.status(500).json({ success: false, message: 'Server error.' });
+    }
+});
+
+
+router.delete('/:id', requireAdmin, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [rows] = await db.query('SELECT id, role FROM users WHERE id = ?', [id]);
+        if (!rows.length) return res.status(404).json({ success: false, message: 'User not found.' });
+        if (rows[0].role === 'admin') {
+            return res.status(403).json({ success: false, message: 'Admin accounts cannot be deleted.' });
+        }
+
+        await db.query('DELETE FROM users WHERE id = ?', [id]);
+        return res.json({ success: true, message: 'User deleted successfully.' });
+    } catch (err) {
+        console.error('Delete user error:', err);
         return res.status(500).json({ success: false, message: 'Server error.' });
     }
 });

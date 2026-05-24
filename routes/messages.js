@@ -16,7 +16,7 @@ function requireAdmin(req, res, next) {
     next();
 }
 
-// POST /api/messages - send a contact message
+
 router.post('/', requireLogin, async (req, res) => {
     const { name, email, message } = req.body;
     const userId = req.session.user.id;
@@ -37,7 +37,7 @@ router.post('/', requireLogin, async (req, res) => {
     }
 });
 
-// GET /api/messages - get all messages (admin only)
+
 router.get('/', requireAdmin, async (req, res) => {
     try {
         const [rows] = await db.query(
@@ -51,7 +51,6 @@ router.get('/', requireAdmin, async (req, res) => {
 });
 
 
-// PUT /api/messages/:id/reply - admin replies to a message
 router.put('/:id/reply', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { reply } = req.body;
@@ -75,7 +74,7 @@ router.put('/:id/reply', requireAdmin, async (req, res) => {
     }
 });
 
-// GET /api/messages/my - get logged-in user's own messages
+
 router.get('/my', requireLogin, async (req, res) => {
     const userId = req.session.user.id;
     try {
@@ -90,7 +89,6 @@ router.get('/my', requireLogin, async (req, res) => {
     }
 });
 
-// DELETE /api/messages/:id - delete a message (admin only)
 router.delete('/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     try {

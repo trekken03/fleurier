@@ -4,7 +4,7 @@ const db = require('../db');
 const { sendVerificationEmail } = require('../config/mailer');
 const router = express.Router();
 
-// POST /api/auth/register
+
 router.post('/register', async (req, res) => {
     const { fullname, email, phone, address, password } = req.body;
 
@@ -20,24 +20,24 @@ router.post('/register', async (req, res) => {
 
         const hashed = await bcrypt.hash(password, 10);
 
-        // Generate 6-digit verification code
+
         const code = Math.floor(100000 + Math.random() * 900000).toString();
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
         const [result] = await db.query(
             'INSERT INTO users (fullname, email, phone, address, password, role, is_verified, verification_code, code_expires_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)',
             [fullname, email, phone || '', address || '', hashed, 'user', code, expiresAt]
         );
 
-        // Send verification email
+
         try {
             await sendVerificationEmail(email, fullname, code);
         } catch (mailErr) {
             console.error('Email send error:', mailErr.message);
-            // Still proceed even if email fails — user can request resend
+
         }
 
-        // Store pending verification in session
+
         req.session.pendingVerification = { userId: result.insertId, email, fullname };
 
         return res.json({ success: true, message: 'Account created! Please check your email for the verification code.', email });
@@ -48,7 +48,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// POST /api/auth/verify-email
+
 router.post('/verify-email', async (req, res) => {
     const { code } = req.body;
     const pending = req.session.pendingVerification;
@@ -77,13 +77,13 @@ router.post('/verify-email', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Code has expired. Please request a new one.' });
         }
 
-        // Mark as verified
+
         await db.query(
             'UPDATE users SET is_verified = 1, verification_code = NULL, code_expires_at = NULL WHERE id = ?',
             [user.id]
         );
 
-        // Clear pending session
+
         req.session.pendingVerification = null;
 
         return res.json({ success: true, message: 'Email verified successfully! You can now log in.' });
@@ -94,7 +94,7 @@ router.post('/verify-email', async (req, res) => {
     }
 });
 
-// POST /api/auth/resend-code
+
 router.post('/resend-code', async (req, res) => {
     const pending = req.session.pendingVerification;
 
@@ -121,7 +121,7 @@ router.post('/resend-code', async (req, res) => {
     }
 });
 
-// POST /api/auth/login
+
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -162,9 +162,9 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid email or password. Please try again.' });
         }
 
-        // Check if email is verified
+
         if (!user.is_verified) {
-            // Re-send verification code
+
             const code = Math.floor(100000 + Math.random() * 900000).toString();
             const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
             await db.query(
@@ -193,7 +193,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// POST /api/auth/logout
+
 router.post('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) return res.status(500).json({ success: false, message: 'Logout failed.' });
@@ -202,7 +202,7 @@ router.post('/logout', (req, res) => {
     });
 });
 
-// GET /api/auth/me - check current session
+
 router.get('/me', (req, res) => {
     if (req.session.user) {
         return res.json({ success: true, user: req.session.user });
@@ -210,7 +210,7 @@ router.get('/me', (req, res) => {
     return res.json({ success: false, user: null });
 });
 
-// POST /api/auth/forgot-password
+
 router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
 
@@ -224,8 +224,6 @@ router.post('/forgot-password', async (req, res) => {
             return res.status(404).json({ success: false, message: 'No account found with that email address.' });
         }
 
-        // In a real app you'd send an email here
-        // For now we simulate the same behavior as your original frontend
         return res.json({ success: true, message: `Reset link sent! Check your email (${email}).` });
 
     } catch (err) {
@@ -236,24 +234,21 @@ router.post('/forgot-password', async (req, res) => {
 
 module.exports = router;
 
-// -------------------------------------------------------
-// Google OAuth Routes
-// -------------------------------------------------------
+
 const passport = require('passport');
 
-// GET /api/auth/google - redirect to Google login
+
 router.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
-// GET /api/auth/google/callback - Google redirects here
 router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/login.html?error=google' }),
     async (req, res) => {
         try {
             const user = req.user;
 
-            // Set our custom session
+
             req.session.user = {
                 id: user.id,
                 fullname: user.fullname,
@@ -265,7 +260,7 @@ router.get('/google/callback',
                 google_id: user.google_id || null
             };
 
-            // Redirect based on role
+
             if (user.role === 'admin') {
                 return res.redirect('/admin_dashb.html');
             }

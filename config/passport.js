@@ -15,7 +15,7 @@ module.exports = function (passport) {
                 const googleId = profile.id;
                 const photo = profile.photos[0]?.value || null;
 
-                // Check if user already exists by google_id or email
+
                 const [existing] = await db.query(
                     'SELECT * FROM users WHERE google_id = ? OR email = ?',
                     [googleId, email]
@@ -24,7 +24,7 @@ module.exports = function (passport) {
                 if (existing.length > 0) {
                     const user = existing[0];
 
-                    // If found by email but no google_id yet, link the account
+
                     if (!user.google_id) {
                         await db.query(
                             'UPDATE users SET google_id = ?, profile_photo = ? WHERE id = ?',
@@ -37,7 +37,7 @@ module.exports = function (passport) {
                     return done(null, user);
                 }
 
-                // New user — create account
+
                 const [result] = await db.query(
                     'INSERT INTO users (fullname, email, google_id, profile_photo, password, role) VALUES (?, ?, ?, ?, ?, ?)',
                     [fullname, email, googleId, photo, '', 'user']

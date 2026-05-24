@@ -1,4 +1,4 @@
-
+// registration.js - registers user via server API
 (async function () {
     try {
         const res = await fetch('/api/auth/me', { credentials: 'include' });
@@ -105,7 +105,7 @@ document.getElementById('registerBtn').addEventListener('click', async function 
         if (data.success) {
             document.getElementById('emailError').classList.add('d-none');
             showToast(`Welcome, ${data.user.fullname}! Account created successfully.`, 'success');
-            setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+            setTimeout(() => { window.location.href = 'index.html'; }, 1500);
         } else {
             if (res.status === 409) {
                 document.getElementById('emailError').classList.remove('d-none');

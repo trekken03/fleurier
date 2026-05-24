@@ -1,5 +1,6 @@
+// login.js - authenticates via server API
 (async function () {
-
+    // If already logged in, redirect
     try {
         const res = await fetch('/api/auth/me', { credentials: 'include' });
         const data = await res.json();
@@ -42,6 +43,11 @@ document.getElementById('loginBtn').addEventListener('click', async function () 
             setTimeout(() => {
                 window.location.href = data.user.role === 'admin' ? 'admin_dashb.html' : 'index.html';
             }, 1500);
+        } else if (data.unverified) {
+            showToast('Please verify your email first. Redirecting...', 'warning');
+            setTimeout(() => {
+                window.location.href = 'verify.html?email=' + encodeURIComponent(email);
+            }, 2000);
         } else {
             showToast(data.message || 'Invalid email or password.');
         }

@@ -1,7 +1,8 @@
 const express = require('express');
-const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../db');
+const { sendVerificationEmail } = require('../config/mailer');
+const router = express.Router();
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
@@ -18,19 +19,105 @@ router.post('/register', async (req, res) => {
         }
 
         const hashed = await bcrypt.hash(password, 10);
+
+        // Generate 6-digit verification code
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
         const [result] = await db.query(
-            'INSERT INTO users (fullname, email, phone, address, password, role) VALUES (?, ?, ?, ?, ?, ?)',
-            [fullname, email, phone || '', address || '', hashed, 'user']
+            'INSERT INTO users (fullname, email, phone, address, password, role, is_verified, verification_code, code_expires_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)',
+            [fullname, email, phone || '', address || '', hashed, 'user', code, expiresAt]
         );
 
-        const newUser = { id: result.insertId, fullname, email, phone, address, role: 'user' };
+        // Send verification email
+        try {
+            await sendVerificationEmail(email, fullname, code);
+        } catch (mailErr) {
+            console.error('Email send error:', mailErr.message);
+            // Still proceed even if email fails — user can request resend
+        }
 
+        // Store pending verification in session
+        req.session.pendingVerification = { userId: result.insertId, email, fullname };
 
-        return res.json({ success: true, message: `Welcome, ${fullname}!`, user: newUser });
+        return res.json({ success: true, message: 'Account created! Please check your email for the verification code.', email });
 
     } catch (err) {
         console.error('Register error:', err);
         return res.status(500).json({ success: false, message: 'Server error. Please try again.' });
+    }
+});
+
+// POST /api/auth/verify-email
+router.post('/verify-email', async (req, res) => {
+    const { code } = req.body;
+    const pending = req.session.pendingVerification;
+
+    if (!pending) {
+        return res.status(400).json({ success: false, message: 'No verification pending. Please register again.' });
+    }
+    if (!code) {
+        return res.status(400).json({ success: false, message: 'Please enter the verification code.' });
+    }
+
+    try {
+        const [rows] = await db.query(
+            'SELECT * FROM users WHERE id = ? AND verification_code = ?',
+            [pending.userId, code.trim()]
+        );
+
+        if (!rows.length) {
+            return res.status(400).json({ success: false, message: 'Invalid verification code. Please try again.' });
+        }
+
+        const user = rows[0];
+
+        // Check expiry
+        if (new Date() > new Date(user.code_expires_at)) {
+            return res.status(400).json({ success: false, message: 'Code has expired. Please request a new one.' });
+        }
+
+        // Mark as verified
+        await db.query(
+            'UPDATE users SET is_verified = 1, verification_code = NULL, code_expires_at = NULL WHERE id = ?',
+            [user.id]
+        );
+
+        // Clear pending session
+        req.session.pendingVerification = null;
+
+        return res.json({ success: true, message: 'Email verified successfully! You can now log in.' });
+
+    } catch (err) {
+        console.error('Verify email error:', err);
+        return res.status(500).json({ success: false, message: 'Server error. Please try again.' });
+    }
+});
+
+// POST /api/auth/resend-code
+router.post('/resend-code', async (req, res) => {
+    const pending = req.session.pendingVerification;
+
+    if (!pending) {
+        return res.status(400).json({ success: false, message: 'No verification pending.' });
+    }
+
+    try {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+        await db.query(
+            'UPDATE users SET verification_code = ?, code_expires_at = ? WHERE id = ?',
+            [code, expiresAt, pending.userId]
+        );
+
+        await sendVerificationEmail(pending.email, pending.fullname, code);
+
+        return res.json({ success: true, message: 'A new code has been sent to your email.' });
+
+    } catch (err) {
+        console.error('Resend code error:', err);
+        return res.status(500).json({ success: false, message: 'Failed to resend code.' });
     }
 });
 
@@ -73,6 +160,20 @@ router.post('/login', async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
             return res.status(401).json({ success: false, message: 'Invalid email or password. Please try again.' });
+        }
+
+        // Check if email is verified
+        if (!user.is_verified) {
+            // Re-send verification code
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+            await db.query(
+                'UPDATE users SET verification_code = ?, code_expires_at = ? WHERE id = ?',
+                [code, expiresAt, user.id]
+            );
+            try { await sendVerificationEmail(user.email, user.fullname, code); } catch (e) { }
+            req.session.pendingVerification = { userId: user.id, email: user.email, fullname: user.fullname };
+            return res.status(403).json({ success: false, message: 'Please verify your email first.', unverified: true });
         }
 
         req.session.user = {

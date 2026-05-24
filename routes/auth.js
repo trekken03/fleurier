@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
 
         const newUser = { id: result.insertId, fullname, email, phone, address, role: 'user' };
 
-        req.session.user = newUser;
+
         return res.json({ success: true, message: `Welcome, ${fullname}!`, user: newUser });
 
     } catch (err) {

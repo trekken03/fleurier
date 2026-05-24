@@ -36,7 +36,7 @@ router.post('/', requireLogin, async (req, res) => {
 
     const orderCode = 'ORD-' + Date.now();
     try {
-
+        // Insert order
         const [orderResult] = await db.query(
             `INSERT INTO orders
              (order_code, user_id, fullname, email, phone, address,
@@ -54,14 +54,14 @@ router.post('/', requireLogin, async (req, res) => {
 
         const orderId = orderResult.insertId;
 
-
+        // Insert order items + deduct stock
         for (const item of items) {
             await db.query(
                 'INSERT INTO order_items (order_id, product_id, name, price, quantity, image) VALUES (?, ?, ?, ?, ?, ?)',
                 [orderId, item.product_id || null, item.name, item.price, item.quantity, item.image || '']
             );
 
-
+            // Deduct stock
             if (item.product_id) {
                 await db.query(
                     'UPDATE products SET stock = GREATEST(0, stock - ?) WHERE id = ?',
@@ -69,7 +69,7 @@ router.post('/', requireLogin, async (req, res) => {
                 );
             }
 
-
+            // Remove from cart
             await db.query(
                 'DELETE FROM cart WHERE user_id = ? AND product_id = ?',
                 [userId, item.product_id]
@@ -84,7 +84,7 @@ router.post('/', requireLogin, async (req, res) => {
     }
 });
 
-
+// GET /api/orders/my - get logged-in user's orders
 router.get('/my', requireLogin, async (req, res) => {
     const userId = req.session.user.id;
 
@@ -109,7 +109,7 @@ router.get('/my', requireLogin, async (req, res) => {
     }
 });
 
-
+// GET /api/orders - get all orders (admin only)
 router.get('/', requireAdmin, async (req, res) => {
     try {
         const [orders] = await db.query('SELECT * FROM orders ORDER BY created_at DESC');
@@ -127,9 +127,14 @@ router.get('/', requireAdmin, async (req, res) => {
 });
 
 
-router.put('/:id/status', requireAdmin, async (req, res) => {
+// PUT /api/orders/:id/status - update order status
+// Users can only cancel their OWN pending orders
+// Admins can update any order to any status
+router.put('/:id/status', requireLogin, async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
+    const isAdmin = req.session.user.role === 'admin';
+    const userId = req.session.user.id;
 
     const validStatuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
     if (!validStatuses.includes(status)) {
@@ -141,11 +146,24 @@ router.put('/:id/status', requireAdmin, async (req, res) => {
         if (!orders.length) return res.status(404).json({ success: false, message: 'Order not found.' });
 
         const order = orders[0];
-        const oldStatus = order.status;
 
+        // Non-admin users can only cancel their own pending orders
+        if (!isAdmin) {
+            if (order.user_id !== userId) {
+                return res.status(403).json({ success: false, message: 'You can only cancel your own orders.' });
+            }
+            if (order.status !== 'Pending') {
+                return res.status(403).json({ success: false, message: 'Only pending orders can be cancelled.' });
+            }
+            if (status !== 'Cancelled') {
+                return res.status(403).json({ success: false, message: 'Users can only cancel orders.' });
+            }
+        }
+
+        const oldStatus = order.status;
         await db.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
 
-
+        // Restore stock if cancelled
         if (status === 'Cancelled' && oldStatus !== 'Cancelled') {
             const [items] = await db.query('SELECT * FROM order_items WHERE order_id = ?', [id]);
             for (const item of items) {
@@ -164,5 +182,6 @@ router.put('/:id/status', requireAdmin, async (req, res) => {
         return res.status(500).json({ success: false, message: 'Server error.' });
     }
 });
+
 
 module.exports = router;

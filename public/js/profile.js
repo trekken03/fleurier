@@ -60,19 +60,62 @@ async function loadOrderHistory() {
             return;
         }
 
-        listEl.innerHTML = data.orders.map(o => `
+        listEl.innerHTML = data.orders.map(o => {
+            const isPending = o.status === 'Pending' || o.status === 'pending';
+            const cancelBtn = isPending
+                ? `<button class="btn btn-outline-danger btn-sm mt-1 cancel-order-btn"
+                        style="font-size:0.7rem;padding:2px 8px;"
+                        data-id="${o.id}" data-code="${o.order_code}">
+                        Cancel
+                   </button>`
+                : '';
+
+            return `
             <div class="d-flex justify-content-between align-items-center border-bottom py-2">
                 <div>
                     <div class="fw-semibold small">${o.order_code}</div>
                     <div class="text-muted" style="font-size:0.8rem;">
                         ${new Date(o.created_at).toLocaleDateString()} &bull; ${o.items?.length || 0} item(s)
                     </div>
+                    ${cancelBtn}
                 </div>
                 <div class="text-end">
                     <div class="fw-bold text-danger small">₱${parseFloat(o.total).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
                     <span class="badge ${statusBadge(o.status)}" style="font-size:0.7rem;">${o.status}</span>
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
+
+        // Attach cancel button events
+        document.querySelectorAll('.cancel-order-btn').forEach(btn => {
+            btn.addEventListener('click', async function () {
+                const orderId = this.dataset.id;
+                const orderCode = this.dataset.code;
+
+                if (!confirm(`Cancel order ${orderCode}? This cannot be undone.`)) return;
+
+                try {
+                    const res = await fetch('/api/orders/' + orderId + '/status', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ status: 'Cancelled' })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        showToast('Order cancelled successfully.', 'success');
+                        loadOrderHistory();
+                    } else {
+                        showToast(data.message || 'Failed to cancel order.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Cancel order error:', err);
+                    showToast('Could not connect to server.', 'danger');
+                }
+            });
+        });
+
     } catch (err) {
         console.error('Load orders error:', err);
         listEl.innerHTML = '<p class="text-muted text-center py-3">Could not load orders.</p>';

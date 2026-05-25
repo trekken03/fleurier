@@ -1,66 +1,41 @@
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
-
-transporter.verify((error, success) => {
-    if (error) {
-        console.error('SMTP Error:', error);
-    } else {
-        console.log('SMTP server is ready');
-    }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendVerificationEmail(toEmail, fullname, code) {
     try {
-        const mailOptions = {
-            from: `"Fleurier 🌸" <${process.env.EMAIL_USER}>`,
+        const response = await resend.emails.send({
+            from: 'Fleurier <onboarding@resend.dev>',
             to: toEmail,
             subject: 'Verify your Fleurier account',
             html: `
-            <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; background-color: #fbfaf9; border-radius: 12px;">
-                <div style="text-align: center; margin-bottom: 24px;">
-                    <h1 style="color: #d0b9b6; font-size: 2rem; margin: 0;">🌸 Fleurier</h1>
+            <div style="font-family: Arial, sans-serif;">
+                <h1>🌸 Fleurier</h1>
+                <h2>Hello ${fullname}</h2>
+                <p>Your verification code is:</p>
+
+                <div style="
+                    font-size: 32px;
+                    font-weight: bold;
+                    letter-spacing: 8px;
+                    background: #d0b9b6;
+                    color: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    display: inline-block;
+                ">
+                    ${code}
                 </div>
 
-                <h2 style="color: #3a2a2a; font-size: 1.3rem;">
-                    Hi, ${fullname}!
-                </h2>
-
-                <p style="color: #666; line-height: 1.6;">
-                    Thank you for registering with Fleurier!
-                </p>
-
-                <div style="text-align: center; margin: 30px 0;">
-                    <div style="display: inline-block; background-color: #d0b9b6; color: white; font-size: 2.5rem; font-weight: bold; letter-spacing: 12px; padding: 16px 32px; border-radius: 12px;">
-                        ${code}
-                    </div>
-                </div>
-
-                <p style="color: #999; font-size: 0.85rem; text-align: center;">
-                    This code expires in <strong>10 minutes</strong>.
-                </p>
+                <p>This code expires in 10 minutes.</p>
             </div>
             `
-        };
+        });
 
-        const info = await transporter.sendMail(mailOptions);
-
-        console.log('Email sent:', info.response);
+        console.log('Email sent:', response);
 
     } catch (error) {
-        console.error('Email send error:', error);
+        console.error('Resend error:', error);
     }
 }
 

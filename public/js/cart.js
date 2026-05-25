@@ -139,6 +139,32 @@ function updateSelectAll(cart) {
     }
 }
 
+function updateCartCount() {
+    fetch('/api/cart', { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+            const navCart = document.getElementById('navCart');
+            if (!navCart) return;
+            const cartLink = navCart.querySelector('a');
+            if (!cartLink) return;
+            const count = data.success
+                ? data.cart.reduce((sum, item) => sum + item.quantity, 0)
+                : 0;
+            if (count > 0) {
+                cartLink.innerHTML = `
+                    <span class="position-relative">
+                        <i class="fa-solid fa-cart-shopping fa-xl"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="font-size:0.6rem; padding: 3px 6px;">
+                            ${count}
+                        </span>
+                    </span>`;
+            } else {
+                cartLink.innerHTML = `<i class="fa-solid fa-cart-shopping fa-xl"></i>`;
+            }
+        }).catch(() => { });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     renderCart();
 
@@ -178,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 showToast('deleteConfirmToast');
                 renderCart();
+                updateCartCount();
             }
         });
     }

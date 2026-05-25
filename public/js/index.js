@@ -40,6 +40,18 @@ function attachButtonEvents() {
                 document.getElementById('cartToastBody').textContent = `${name} added to cart!`;
                 bootstrap.Toast.getOrCreateInstance(document.getElementById('cartToast')).show();
                 renderProducts(await fetchProducts());
+
+                fetch('/api/cart', { credentials: 'include' })
+                    .then(r => r.json())
+                    .then(data => {
+                        const navCart = document.getElementById('navCart');
+                        if (!navCart) return;
+                        const cartLink = navCart.querySelector('a');
+                        const count = data.success ? data.cart.reduce((sum, i) => sum + i.quantity, 0) : 0;
+                        if (count > 0) {
+                            cartLink.innerHTML = `<span class="position-relative"><i class="fa-solid fa-cart-shopping fa-xl"></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;padding:3px 6px;">${count}</span></span>`;
+                        }
+                    }).catch(() => { });
             }
         });
     });

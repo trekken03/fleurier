@@ -130,7 +130,7 @@ router.post('/login', async (req, res) => {
     }
 
     try {
-        // Admin hardcoded check (matches your original logic)
+
         if (email === 'admin@fleurier.com' && password === 'admin123') {
             const [admins] = await db.query('SELECT * FROM users WHERE email = ? AND role = ?', [email, 'admin']);
             let adminUser;
@@ -138,7 +138,7 @@ router.post('/login', async (req, res) => {
             if (admins.length > 0) {
                 adminUser = admins[0];
             } else {
-                // Create admin if not in DB yet
+
                 const hashed = await bcrypt.hash('admin123', 10);
                 const [result] = await db.query(
                     'INSERT INTO users (fullname, email, password, role) VALUES (?, ?, ?, ?)',

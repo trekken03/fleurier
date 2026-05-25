@@ -34,6 +34,23 @@
             if (navGreeting) navGreeting.classList.remove('d-none');
             if (navGreetingText) navGreetingText.textContent = `Hi, ${user.fullname}!`;
             if (navCart) navCart.classList.remove('d-none');
+
+            fetch('/api/cart', { credentials: 'include' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.cart.length > 0) {
+                        const cartLink = navCart.querySelector('a');
+                        const count = data.cart.length;
+                        cartLink.innerHTML = `
+                <span class="position-relative">
+                    <i class="fa-solid fa-cart-shopping fa-xl"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        style="font-size:0.6rem; padding: 3px 6px;">
+                        ${count}
+                    </span>
+                </span>`;
+                    }
+                }).catch(() => { });
             if (navLogout) navLogout.classList.remove('d-none');
 
         } else {
